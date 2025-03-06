@@ -1,3 +1,4 @@
+
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 
@@ -46,3 +47,4 @@ userInput.addEventListener("keypress", (event) => {
         sendMessage();
     }
 });
+
