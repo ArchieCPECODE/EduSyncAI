@@ -14,6 +14,11 @@ if (!COHERE_API_KEY) {
     process.exit(1);
 }
 
+// ✅ Fix: Add a root route to prevent "Cannot GET /" error
+app.get("/", (req, res) => {
+    res.send("EduSync AI backend is live! Use the /chat endpoint for AI responses.");
+});
+
 app.post("/chat", async (req, res) => {
     const { prompt } = req.body;
 
@@ -21,10 +26,8 @@ app.post("/chat", async (req, res) => {
         return res.status(400).json({ error: "Prompt is required" });
     }
 
-    // Convert message to lowercase to make it case-insensitive
     const userMessage = prompt.trim().toLowerCase();
 
-    // Check if user is asking about EduSync AI
     if (userMessage.includes("who are you") || userMessage.includes("what is edusync")) {
         return res.json({ response: "I am EduSync AI, created by Archie Abona and powered by Cohere." });
     }
@@ -56,5 +59,5 @@ app.post("/chat", async (req, res) => {
     }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
