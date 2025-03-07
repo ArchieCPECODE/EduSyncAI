@@ -24,7 +24,7 @@
       "dest": "/Ai.html"
     },
     {
-      "src": "/api/(.*)",
+      "src": "/chat",
       "dest": "server.js"
     }
   ]
