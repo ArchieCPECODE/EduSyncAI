@@ -1,3 +1,4 @@
+
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 
@@ -23,7 +24,7 @@ async function sendMessage() {
     addMessage("Thinking...", "bot");
 
     try {
-        const response = await fetch("https://edu-sync-25mysi7ke-archiecpecodes-projects.vercel.app/chat", {
+        const response = await fetch("http://localhost:5000/chat", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -31,15 +32,10 @@ async function sendMessage() {
             body: JSON.stringify({ prompt: message })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
         const data = await response.json();
         chatBox.lastChild.remove(); // Remove "Thinking..."
         addMessage(data.response, "bot");
     } catch (error) {
-        console.error("Error connecting to AI:", error);
         chatBox.lastChild.remove(); // Remove "Thinking..."
         addMessage("Error: Unable to connect to AI.", "bot");
     }
@@ -51,3 +47,4 @@ userInput.addEventListener("keypress", (event) => {
         sendMessage();
     }
 });
+
