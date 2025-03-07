@@ -23,14 +23,15 @@ async function sendMessage() {
     addMessage("Thinking...", "bot");
 
     try {
-        const response = await fetch("https://edu-sync-lz4ynp6db-archiecpecodes-projects.vercel.app/chat", {
+        const response = await fetch("https://edu-sync-6b73k5sdw-archiecpecodes-projects.vercel.app/chat", {
             method: "POST",
-            mode: "cors",
+            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ prompt: message })
+            body: JSON.stringify({ prompt: "Hi" })
         });
+        
 
         if (!response.ok) {
             throw new Error(`Server error: ${response.status}`);
