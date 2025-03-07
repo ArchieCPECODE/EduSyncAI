@@ -4,27 +4,11 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "Ai.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "styles.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "script.js",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/",
-      "dest": "/Ai.html"
-    },
-    {
-      "src": "/chat",
+      "src": "/(.*)",
       "dest": "server.js"
     }
   ]
