@@ -10,7 +10,7 @@ app.use(cors());
 const COHERE_API_KEY = process.env.COHERE_API_KEY;
 
 if (!COHERE_API_KEY) {
-    console.error("⚠️ ERROR: Missing Cohere API Key in .env file!");
+    console.error("\u26A0\uFE0F ERROR: Missing Cohere API Key in .env file!");
     process.exit(1);
 }
 
@@ -60,4 +60,4 @@ app.post("/chat", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`\uD83D\uDE80 Server running on port ${PORT}`));
