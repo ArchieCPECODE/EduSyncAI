@@ -6,32 +6,41 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 
-// ✅ Allow requests only from your Vercel frontend
-const allowedOrigins = ["https://edu-sync-archiecpecodes-projects.vercel.app"];
+// ✅ Fix: Allow only the frontend origin to access the API
+const allowedOrigins = ["https://edu-sync-d02on9p2-archiecpecodes-projects.vercel.app"];
 app.use(cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("CORS not allowed"));
+        }
+    }
 }));
 
 const COHERE_API_KEY = process.env.COHERE_API_KEY;
 
 if (!COHERE_API_KEY) {
-    console.error("⚠️ ERROR: Missing Cohere API Key in .env file!");
+    console.error("\u26A0\uFE0F ERROR: Missing Cohere API Key in .env file!");
     process.exit(1);
 }
 
-// ✅ Root route to confirm the backend is live
+// ✅ Fix: Add a root route to check server status
 app.get("/", (req, res) => {
     res.send("EduSync AI backend is live! Use the /chat endpoint for AI responses.");
 });
 
-// ✅ AI Chat Endpoint
 app.post("/chat", async (req, res) => {
     const { prompt } = req.body;
 
     if (!prompt) {
         return res.status(400).json({ error: "Prompt is required" });
+    }
+
+    const userMessage = prompt.trim().toLowerCase();
+
+    if (userMessage.includes("who are you") || userMessage.includes("what is edusync")) {
+        return res.json({ response: "I am EduSync AI, created by Archie Abona and powered by Cohere." });
     }
 
     try {
@@ -50,17 +59,16 @@ app.post("/chat", async (req, res) => {
 
         const data = await response.json();
 
-        // ✅ Handle missing response cases
-        const aiResponse = data.generations?.[0]?.text?.trim() || "Sorry, I couldn't process that request.";
-        
-        res.json({ response: aiResponse });
+        if (!data.generations || data.generations.length === 0) {
+            return res.status(500).json({ error: "No AI response received" });
+        }
 
+        res.json({ response: data.generations[0].text.trim() });
     } catch (error) {
-        console.error("❌ Error:", error);
+        console.error("Error:", error);
         res.status(500).json({ error: "AI request failed", details: error.message });
     }
 });
 
-// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`\uD83D\uDE80 Server running on port ${PORT}`));

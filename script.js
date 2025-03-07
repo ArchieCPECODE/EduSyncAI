@@ -25,7 +25,7 @@ async function sendMessage() {
     try {
         const response = await fetch("https://edu-sync-lz4ynp6db-archiecpecodes-projects.vercel.app/chat", {
             method: "POST",
-            mode: "cors",  // Allow cross-origin requests
+            mode: "cors",
             headers: {
                 "Content-Type": "application/json"
             },
