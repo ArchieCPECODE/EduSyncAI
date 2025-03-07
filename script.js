@@ -1,6 +1,11 @@
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 
+if (!chatBox || !userInput) {
+    console.error("Required elements are missing from the DOM.");
+    throw new Error("Required elements are missing from the DOM.");
+}
+
 // Function to add a message to the chat
 function addMessage(text, sender) {
     const messageDiv = document.createElement("div");
@@ -23,13 +28,12 @@ async function sendMessage() {
     addMessage("Thinking...", "bot");
 
     try {
-        const response = await fetch("https://edu-sync-6b73k5sdw-archiecpecodes-projects.vercel.app/chat", {
+        const response = await fetch("https://edu-sync-ubztxjnch-archiecpecodes-projects.vercel.app/chat", {
             method: "POST",
-            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ prompt: "Hi" })
+            body: JSON.stringify({ prompt: message }) // Gamitin ang tamang message
         });
         
 
@@ -37,9 +41,16 @@ async function sendMessage() {
             throw new Error(`Server error: ${response.status}`);
         }
 
-        const data = await response.json();
-        chatBox.lastChild.remove(); // Remove "Thinking..."
-        addMessage(data.response, "bot");
+        const textResponse = await response.text();
+        try {
+            const data = JSON.parse(textResponse);
+            chatBox.lastChild.remove(); // Remove "Thinking..."
+            addMessage(data.response, "bot");
+        } catch (err) {
+            chatBox.lastChild.remove(); // Remove "Thinking..."
+            addMessage("Invalid response from server.", "bot");
+        }
+        
     } catch (error) {
         chatBox.lastChild.remove(); // Remove "Thinking..."
         addMessage("Error: Unable to connect to AI.", "bot");
