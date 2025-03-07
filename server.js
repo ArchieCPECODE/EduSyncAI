@@ -2,11 +2,15 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
+import path from "path";
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from "public" folder
+app.use(express.static("public"));
 
 const PORT = process.env.PORT || 3000;
 const COHERE_API_KEY = process.env.COHERE_API_KEY;
@@ -17,12 +21,12 @@ if (!COHERE_API_KEY) {
   process.exit(1);
 }
 
-// ✅ Add root route to prevent "Cannot GET /" error
+// ✅ Serve index.html for root route
 app.get("/", (req, res) => {
-  res.send("EduSync AI Backend is Running! 🚀");
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
-// Sample API Route
+// ✅ API Route for Chatbot
 app.post("/api/chat", async (req, res) => {
   try {
     const response = await fetch("https://api.cohere.ai/v1/generate", {
@@ -48,6 +52,7 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
