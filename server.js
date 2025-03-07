@@ -15,7 +15,6 @@ app.use(express.static("public"));
 const PORT = process.env.PORT || 3000;
 const COHERE_API_KEY = process.env.COHERE_API_KEY;
 
-// Ensure API Key exists
 if (!COHERE_API_KEY) {
   console.error("❌ Missing COHERE_API_KEY. Set it in your environment variables.");
   process.exit(1);
@@ -26,7 +25,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
-// ✅ API Route for Chatbot
 app.post("/api/chat", async (req, res) => {
   try {
     const response = await fetch("https://api.cohere.ai/v1/generate", {
@@ -52,7 +50,6 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
