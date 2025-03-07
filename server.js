@@ -2,8 +2,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
 dotenv.config();
 const app = express();
@@ -18,6 +16,11 @@ if (!COHERE_API_KEY) {
   console.error("❌ Missing COHERE_API_KEY. Set it in your environment variables.");
   process.exit(1);
 }
+
+// ✅ Add root route to prevent "Cannot GET /" error
+app.get("/", (req, res) => {
+  res.send("EduSync AI Backend is Running! 🚀");
+});
 
 // Sample API Route
 app.post("/api/chat", async (req, res) => {
