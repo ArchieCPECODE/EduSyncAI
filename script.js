@@ -24,7 +24,7 @@ async function sendMessage() {
     addMessage("Thinking...", "bot");
 
     try {
-        const response = await fetch("http://localhost:5000/chat", {
+        const response = await fetch("https://edu-sync-lz4ynp6db-archiecpecodes-projects.vercel.app/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
