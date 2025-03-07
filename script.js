@@ -1,6 +1,5 @@
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
-const sendButton = document.getElementById("send-button"); // ✅ Added button support
 
 // Function to add a message to the chat
 function addMessage(text, sender) {
@@ -20,44 +19,36 @@ async function sendMessage() {
     addMessage(message, "user");
     userInput.value = "";
 
-    // ✅ Prevent multiple "Thinking..." messages
-    const thinkingMessage = document.createElement("div");
-    thinkingMessage.classList.add("chat-message", "bot");
-    thinkingMessage.innerText = "Thinking...";
-    chatBox.appendChild(thinkingMessage);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    // Show "Thinking..." message
+    addMessage("Thinking...", "bot");
 
     try {
-        const response = await fetch("https://edu-sync-archiecpecodes-projects.vercel.app/chat", {
+        const response = await fetch("https://edu-sync-lz4ynp6db-archiecpecodes-projects.vercel.app/chat", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            mode: "cors",  // Allow cross-origin requests
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ prompt: message })
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`Server error: ${response.status}`);
         }
 
         const data = await response.json();
-        chatBox.removeChild(thinkingMessage); // ✅ Remove "Thinking..." message
-
-        // ✅ Ensure AI response is not empty
-        const aiResponse = data.response?.trim() || "Sorry, I couldn't understand that.";
-        addMessage(aiResponse, "bot");
-
+        chatBox.lastChild.remove(); // Remove "Thinking..."
+        addMessage(data.response, "bot");
     } catch (error) {
-        console.error("Error connecting to AI:", error);
-        chatBox.removeChild(thinkingMessage); // ✅ Remove "Thinking..." message
+        chatBox.lastChild.remove(); // Remove "Thinking..."
         addMessage("Error: Unable to connect to AI.", "bot");
+        console.error("Fetch error:", error);
     }
 }
 
-// ✅ Add event listener to send message when "Enter" is pressed
+// Add event listener to send message when "Enter" is pressed
 userInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") sendMessage();
+    if (event.key === "Enter") {
+        sendMessage();
+    }
 });
-
-// ✅ Add event listener for send button click
-if (sendButton) {
-    sendButton.addEventListener("click", sendMessage);
-}
