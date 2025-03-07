@@ -41,7 +41,7 @@ app.post("/chat", async (req, res) => {
             },
             body: JSON.stringify({
                 model: "command",
-                prompt: prompt,
+                prompt: `Your name is EduSync AI, an assistant created by Archie Abona. Never refer to yourself as \"Coral\". Here is the user query: ${prompt}`,
                 max_tokens: 100
             })
         });
