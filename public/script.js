@@ -1,23 +1,34 @@
-function sendMessage() {
-    const userInput = document.getElementById('user-input').value;
-    if (!userInput.trim()) return;
+async function sendMessage() {
+    const userInput = document.getElementById("user-input");
+    const chatBox = document.getElementById("chat-box");
 
-    appendMessage('user', userInput);
-    document.getElementById('user-input').value = '';
+    if (userInput.value.trim() === "") return;
 
-    fetch('https://edu-sync-ai.vercel.app/api/chat', { // ✅ Updated API URL
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: userInput })
-    })
-    .then(response => response.json())
-    .then(data => {
-        appendMessage('bot', data.reply);
-    })
-    .catch(error => {
-        appendMessage('bot', 'Error: Unable to connect to AI.');
-        console.error("🔥 API Error:", error);
-    });
+    // Display user message
+    const userMessage = document.createElement("div");
+    userMessage.className = "user-message";
+    userMessage.textContent = "You: " + userInput.value;
+    chatBox.appendChild(userMessage);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: userInput.value })
+        });
+
+        const data = await response.json();
+
+        // Display bot response
+        const botMessage = document.createElement("div");
+        botMessage.className = "bot-message";
+        botMessage.textContent = "AI: " + (data.reply || "Sorry, I couldn't understand.");
+        chatBox.appendChild(botMessage);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+
+    userInput.value = "";
 }
